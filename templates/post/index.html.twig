@@ -12,7 +12,9 @@
             <tr>
                 <td>ID</td>
                 <td>Tittle</td>
-                <td>Actions</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td>Actions</td>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -24,11 +26,13 @@
                             {{ post.title }}
                         </a>
                     </td>
-                    <td>
-                        <a class="text-danger" href="{{ path('post_delete', {id: post.id}) }}">
-                            Delete
-                        </a>
-                    </td>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <td>
+                            <a class="text-danger" href="{{ path('post_delete', {id: post.id}) }}">
+                                Delete
+                            </a>
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

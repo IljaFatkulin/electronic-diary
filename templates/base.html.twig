@@ -28,15 +28,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        {% if is_granted('IS_AUTHENTICATED') %}
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <div class="nav-item dropdown">
                                 <a class="nav-link" href="{{ path('post_index') }}">Post</a>
                                 <div class="dropdown-content">
-                                    <a href="{{ path('post_create') }}">Create</a>
+                                    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('post_create') }}">Create</a>{% endif %}
                                 </div>
                             </div>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('profile') }}">{{ app.user.username }}</a>
+                                <a class="nav-link" href="{{ path('profile')}}">{{ app.user.username }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>

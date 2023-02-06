@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -23,7 +24,7 @@ class RegistrationController extends AbstractController
      * @return Response
      */
     #[Route('/register', name: 'register')]
-    public function register(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository): Response
     {
         $form = $this->createFormBuilder()
             ->add('username')
@@ -46,10 +47,17 @@ class RegistrationController extends AbstractController
         if($form->isSubmitted()) {
             $data = $form->getData();
 
+            $users = $userRepository->findAll();
+
+            if($this->checkUserExist($users, $data['username']) == 1) {
+                return $this->redirect($this->generateUrl('register'));
+            }
+
             $user = new User();
             $user->setUsername($data['username']);
             $user->setPassword(
                 $passwordHasher->hashPassword($user, $data['password'])
+//                $data['password']
             );
             $em = $this->doctrine->getManager();
 
@@ -62,5 +70,16 @@ class RegistrationController extends AbstractController
         return $this->render('registration/index.html.twig' , [
             'form' => $form->createView()
         ]);
+    }
+
+    public function checkUserExist($users, $name): int
+    {
+        foreach($users as $value) {
+            if($value->getUsername() == $name) {
+                $this->addFlash('error', 'User exist');
+                return 1;
+            }
+        }
+        return 0;
     }
 }
