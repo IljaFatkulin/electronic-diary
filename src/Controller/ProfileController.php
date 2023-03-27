@@ -2,11 +2,17 @@
 
 namespace App\Controller;
 
-use App\Repository\MarksRepository;
+use App\Entity\Mark;
+use App\Entity\Subject;
+use App\Repository\GroupUserRepository;
+use App\Repository\MarkRepository;
+use App\Repository\SubjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use http\Client\Curl\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,20 +28,33 @@ class ProfileController extends AbstractController
 
     /**
      * @param Request $request
+     * @param UserRepository $userRepository
+     * @param UserInterface $user
+     * @param UserPasswordHasherInterface $passwordHasher
      * @return Response
      */
     #[Route('/profile/{name?}', name: 'profile')]
-    public function profileAction(Request $request, UserRepository $userRepository, UserInterface $user, UserPasswordHasherInterface $passwordHasher): Response
+    public function profileAction(Request $request, UserRepository $userRepository, GroupUserRepository $groupUserRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $name = $request->get(key: 'name');
         if(!isset($name)) {
             $name = strtolower($request->getSession()->get(Security::LAST_USERNAME) );
         }
 
+        $user = $userRepository->findBy(['username' => $name]);
+        $user = $user[0];
+        
+        $groupUser = $groupUserRepository->findOneBy(['user' => $user]);
+        $group = 'null';
+        if($groupUser != null) {
+            $group = $groupUser->getGroup()->getName();
+        }
+
         $forml = $this->createFormChangeLogin($request);
         if($forml->isSubmitted() && $forml->isValid()) {
             $data = $forml->getData();
             $this->changeLogin($request, $userRepository, $user, $data['login']);
+            return $this->redirect($this->generateUrl('profile'));
         }
 
         $formp = $this->createFormChangePassword($request);
@@ -53,35 +72,19 @@ class ProfileController extends AbstractController
                 $em->persist($user);
                 $em->flush();
 
+                return $this->redirect($this->generateUrl('app_logout'));
             }
         }
-        $name = $request->getSession()->get(Security::LAST_USERNAME);
         return $this->render('profile/profile.html.twig', [
-            'name' => $name,
+            'user' => $user,
             'form_changelogin' => $forml,
-            'form_changepassword' => $formp
+            'form_changepassword' => $formp,
+            'group' => $group
         ]);
     }
 
-    #[Route('/marks/{id?}', 'marks')]
-    public function showMarks(MarksRepository $marksRepository, Request $request, UserRepository $userRepository) : Response
+    public function createFormChangeLogin(Request $request)
     {
-        $id = $request->get('id');
-        $user = $this->getUser();
-        if(isset($id)) {
-            $user = $userRepository->find($id);
-        }
-
-        $marks = $marksRepository->findBy(['user' => $user]);
-//        $user = $request->get('name');
-//        $user = $userRepository->find($user);
-
-        return $this->render('profile/marks.html.twig', [
-            'marks' => $marks
-        ]);
-    }
-
-    public function createFormChangeLogin(Request $request) {
         $form = $this->createFormBuilder()
             ->add('login')
             ->add('confirm', SubmitType::class, [
@@ -99,8 +102,8 @@ class ProfileController extends AbstractController
 
     public function createFormChangePassword(Request $request) {
         $form = $this->createFormBuilder()
-            ->add('old_password')
-            ->add('new_password')
+            ->add('old_password', PasswordType::class)
+            ->add('new_password', PasswordType::class)
             ->add('confirm', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-success'

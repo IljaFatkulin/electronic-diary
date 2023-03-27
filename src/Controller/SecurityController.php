@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,6 +11,31 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(Security $security, private ManagerRegistry $doctrine)
+    {
+        $this->security = $security;
+    }
+
+    #[Route(path: '/getadmin', name: 'getadmin')]
+    public function getadmin()
+    {
+        $em = $this->doctrine->getManager();
+        $user = $this->security->getUser();
+        $roles[] = 'ROLE_ADMIN';
+
+
+        $user->setRoles(array('ROLE_ADMIN'));
+
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('profile'));
+    }
+
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {

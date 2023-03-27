@@ -26,7 +26,7 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route('/', name: 'index')]
-    public function index(PostRepository $postRepository): Response
+    public function index(Request $request, PostRepository $postRepository): Response
     {
         $posts = $postRepository->findAll();
 
@@ -82,24 +82,12 @@ class PostController extends AbstractController
         ]);
     }
 
-//    #[Route('/show/{id}', name:'show')]
-//    public function show($id, PostRepository $postRepository) {
-//        $post = $postRepository->findPostWithCategory($id);
-//
-//        dump($post);
-//
-//        return $this->render('post/show.html.twig', [
-//            'post' => $post
-//        ]);
-//    }
-
-
     /**
      * @param Post $post
+     * @param Request $request
      * @return Response
      */
     #[Route('/show/{id}', name:'show')]
-//    public function show(Post $post, Request $request): Response
     public function show(Post $post, Request $request): Response
     {
         $form = $this->createFormBuilder()

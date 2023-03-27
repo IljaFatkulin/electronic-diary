@@ -57,7 +57,6 @@ class RegistrationController extends AbstractController
             $user->setUsername($data['username']);
             $user->setPassword(
                 $passwordHasher->hashPassword($user, $data['password'])
-//                $data['password']
             );
             $em = $this->doctrine->getManager();
 

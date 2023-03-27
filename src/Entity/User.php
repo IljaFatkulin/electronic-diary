@@ -29,12 +29,24 @@ class User implements UserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(targetEntity: "App\Entity\Marks", mappedBy: "user")]
-    private $marks;
+    #[ORM\OneToMany(targetEntity: 'App\Entity\UserSubject', mappedBy: 'user')]
+    private $subject;
+
+    #[ORM\OneToMany(targetEntity: 'App\Entity\Mark', mappedBy: 'teacher')]
+    private $mark;
+
+    #[ORM\OneToMany(targetEntity: 'App\Entity\GroupUser', mappedBy: 'user')]
+    private $group;
+
+    #[ORM\OneToMany(targetEntity: 'App\Entity\Teacher', mappedBy: 'user')]
+    private $teacher;
 
     public function __construct()
     {
-        $this->marks = new ArrayCollection();
+        $this->subject = new ArrayCollection();
+        $this->mark = new ArrayCollection();
+        $this->group = new ArrayCollection();
+        $this->teacher = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -108,29 +120,119 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection<int, Marks>
+     * @return Collection<int, UserSubject>
      */
-    public function getMarks(): Collection
+    public function getSubject(): Collection
     {
-        return $this->marks;
+        return $this->subject;
     }
 
-    public function addMark(Marks $mark): self
+    public function addSubject(UserSubject $subject): self
     {
-        if (!$this->marks->contains($mark)) {
-            $this->marks->add($mark);
-            $mark->setUser($this);
+        if (!$this->subject->contains($subject)) {
+            $this->subject->add($subject);
+            $subject->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeMark(Marks $mark): self
+    public function removeSubject(UserSubject $subject): self
     {
-        if ($this->marks->removeElement($mark)) {
+        if ($this->subject->removeElement($subject)) {
             // set the owning side to null (unless already changed)
-            if ($mark->getUser() === $this) {
-                $mark->setUser(null);
+            if ($subject->getUser() === $this) {
+                $subject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mark>
+     */
+    public function getMark(): Collection
+    {
+        return $this->mark;
+    }
+
+    public function addMark(Mark $mark): self
+    {
+        if (!$this->mark->contains($mark)) {
+            $this->mark->add($mark);
+            $mark->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMark(Mark $mark): self
+    {
+        if ($this->mark->removeElement($mark)) {
+            // set the owning side to null (unless already changed)
+            if ($mark->getTeacher() === $this) {
+                $mark->setTeacher(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupUser>
+     */
+    public function getGroup(): Collection
+    {
+        return $this->group;
+    }
+
+    public function addGroup(GroupUser $group): self
+    {
+        if (!$this->group->contains($group)) {
+            $this->group->add($group);
+            $group->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(GroupUser $group): self
+    {
+        if ($this->group->removeElement($group)) {
+            // set the owning side to null (unless already changed)
+            if ($group->getUser() === $this) {
+                $group->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Teacher>
+     */
+    public function getTeacher(): Collection
+    {
+        return $this->teacher;
+    }
+
+    public function addTeacher(Teacher $teacher): self
+    {
+        if (!$this->teacher->contains($teacher)) {
+            $this->teacher->add($teacher);
+            $teacher->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacher(Teacher $teacher): self
+    {
+        if ($this->teacher->removeElement($teacher)) {
+            // set the owning side to null (unless already changed)
+            if ($teacher->getUser() === $this) {
+                $teacher->setUser(null);
             }
         }
 
