@@ -1,0 +1,43 @@
+{#{% extends 'admin_panel/base_admin_panel.html.twig' %}#}
+
+{#{% block stylesheets %}#}
+{#<style>#}
+{#    /*.form {*/#}
+{#    /*    max-width: 10em;*/#}
+{#    /*}*/#}
+{#</style>#}
+{#{% endblock %}#}
+
+{#{% block body %}#}
+{#    <div class="row">#}
+{#        <div class="col-sm-2">#}
+{#            <div class="form">#}
+{#                {{ form(form_choose_group) }}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col">#}
+{#            <table class="table table-striped">#}
+{#                <thead>#}
+{#                <tr class="thead">#}
+{#                    <td>Nr</td>#}
+{#                    <td>Subject</td>#}
+{#                    <td>Teacher</td>#}
+{#                </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                {% for lesson in lessons %}#}
+{#                    <tr>#}
+{#                        <td>{{ lesson.lesson }}</td>#}
+{#                        <td>{{ lesson.subject.name }}</td>#}
+{#                        <td>{{ lesson.teacher.user.username }}</td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#                </tbody>#}
+{#            </table>#}
+{#            <button class="btn btn-primary">Add lesson</button>#}
+{#            {% if add_lesson != null %}#}
+{#                {{ form(add_lesson) }}#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

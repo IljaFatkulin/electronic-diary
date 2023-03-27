@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Marks{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .add-subject {
+            display: none;
+        }
+        .mark_value {
+            max-width: 2em;
+            text-align: center;
+        }
+        .addMarkBtn {
+            max-height: 2.17em;
+            margin-bottom: 0.3em;
+        }
+        .input_mark {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1><a href="{{ path('profile', {name: user.username}) }}">{{ user.username }}</a> marks</h1>
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <form action="" method="post">
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Subject</td>
+            <td>Marks</td>
+            <td>Average</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject, marks in marks %}
+            <tr>
+                <td>{{ subject }}</td>
+                <td>
+                    {% for value in marks %}
+                        {% if value.value == 'i' %}
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{ value.id }}">
+                        {% else %}
+                            {% if value.value == 'nv' or value.value == 'ni' or value.value < 4 %}
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{ value.id }}">
+                            {% else %}
+
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ value.id }}">
+                                {% endif %}
+                        {% endif %}
+                            {{ value.value }}
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ value.id }}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Mark</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            Value: <input name="{{ value.id }}" class="mark_value" type="text" value="{{ value.value }}" maxlength="2">
+                                        {% else %}
+                                            Value: {{ value.value }}
+                                        {% endif %}
+                                        <br>
+                                        Date: {% if value.date == null %} null {% else %} {{ value.date|date('d-m-Y') }} {% endif %}
+                                        <br>
+                                        Teacher: {% if value.teacher != null %} {{ value.teacher.username }} {% else %} null {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <a href="{{ path('removeMark', {id: value.id, uid: uid}) }}" class="btn btn-danger">Delete mark</a>
+                                            <button name="save" type="submit" class="btn btn-primary">Save changes</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+{#                            <input name="{{ value.id }}" class="mark_value" type="text" value="{{ value.value }}" maxlength="2">#}
+{#                            |#}
+                    {% endfor %}
+{#                    <btn class="addMarkBtn btn btn-outline-secondary btn-sm">+</btn>#}
+{#                    <input name="{{ subject }}" class="input_mark mark_value" type="text">#}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#{{ subject }}">
+                            +
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ subject }}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Mark</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    <div class="modal-body">
+                                        <input name="v_{{ subject }}" class="mark_value" type="text" maxlength="2">
+                                        <br>
+                                        <input name="d_{{ subject }}" type="date">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button name="save" type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ avg[subject] }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if is_granted('ROLE_ADMIN') %}
+        </form>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <button id="addSubject" class="btn btn-primary">Add subject</button>
+        <div id="formAddSubject" class="form add-subject">
+            {{ form(form) }}
+        </div>
+    {% endif %}
+
+{#    JavaScript#}
+    <script>
+        const btnAddSubject = document.getElementById("addSubject");
+        const form = document.getElementById("formAddSubject");
+        btnAddSubject.addEventListener("click", function() {
+            if(form.style.display === "block") {
+                form.style.display = "none";
+            } else {
+                form.style.display = "block";
+            }
+        });
+
+        const btnAddMark = document.querySelector(".addMarkBtn");
+        const inputMark = document.querySelector(".input_mark");
+        btnAddMark.addEventListener("click", function() {
+            inputMark.style.display = "inline";
+            btnAddMark.style.display = "none";
+        });
+    </script>
+
+{% endblock %}

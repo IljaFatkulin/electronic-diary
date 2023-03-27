@@ -1,0 +1,7 @@
+{% extends 'admin_panel/base_admin_panel.html.twig' %}
+
+{% block body %}
+    Username: {{ user.username }} <br>
+    Role: {{ user.roles[0] }} <br>
+    Group: {{ group }}
+{% endblock %}

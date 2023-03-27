@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Timetable{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .date {
+            font-weight: bold;
+        }
+        thead .thead {
+            font-weight: bold;
+            background: #bcdaff;
+        }
+        .menu {
+            margin: 20px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="menu">
+        <a href="{{ path('timetable_filter', {date: date, action: '-', group: group}) }}" class="btn btn-primary">Previous week</a>
+        <a href="{{ path('timetable_filter', {date: date, action: '+', group: group}) }}" class="prev btn btn-primary" style="float: right;">Next week</a>
+    </div>
+    {% for day, lessons in days %}
+        <div class="day">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td colspan="3"><p class="date">{{ day }}</p></td>
+                </tr>
+                <tr class="thead">
+                    <td>Nr</td>
+                    <td>Subject</td>
+                    <td>Teacher</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for lesson in lessons %}
+                    <tr>
+                        <td>{{ lesson.lesson }}</td>
+                        <td>{{ lesson.subject.name }}</td>
+                        <td>{{ lesson.teacher.user.username }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

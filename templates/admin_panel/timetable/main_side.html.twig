@@ -1,0 +1,38 @@
+{% extends 'admin_panel/base_admin_panel.html.twig' %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr class="thead">
+            <td>Nr</td>
+            <td>Subject</td>
+            <td>Teacher</td>
+            <td>Action</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.lesson }}</td>
+                <td>{{ lesson.subject.name }}</td>
+                <td>{{ lesson.teacher.user.username }}</td>
+                <td>
+                    <a class="text-danger" href="{{ path('admin_timetable_delete', {id: lesson.id, date: date, group: group}) }}">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if add_lesson != null %}
+        {{ form(add_lesson) }}
+    {% endif %}
+
+{% endblock %}

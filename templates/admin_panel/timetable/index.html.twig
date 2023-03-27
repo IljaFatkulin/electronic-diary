@@ -1,0 +1,16 @@
+{% extends 'admin_panel/base_admin_panel.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        /*.form {*/
+        /*    max-width: 10em;*/
+        /*}*/
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="form">
+        {{ form(form_choose_group) }}
+    </div>
+
+{% endblock %}

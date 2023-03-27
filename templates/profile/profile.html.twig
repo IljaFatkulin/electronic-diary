@@ -1,9 +1,14 @@
 {% extends('base.html.twig') %}
 
+{% block title %}Profile{% endblock %}
+
 {% block body %}
-    <h1>Profile: {{ name }}</h1>
-    <p>Role: {{ app.user.roles[0] }}</p>
-    {% if app.user.username == name %}
+    <h1>Profile: {{ user.username }}</h1>
+    {% if user.roles[0] == 'ROLE_USER' %}
+        Group: {{ group }}
+    {% endif %}
+    <p>Role: {{ user.roles[0] }}</p>
+    {% if app.user.username == user.username %}
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login">
             Change login
@@ -37,7 +42,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Change pasoword</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Change password</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

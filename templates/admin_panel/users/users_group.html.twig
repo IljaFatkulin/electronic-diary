@@ -1,0 +1,10 @@
+{% extends 'admin_panel/base_admin_panel.html.twig' %}
+
+{% block body %}
+    <div class="list-group">
+        {% for user in users %}
+            <a href="{{ path('admin_users_profile', {id: user.id}) }}" class="list-group-item list-group-item-action">{{ user.username }}</a>
+        {% endfor %}
+    </div>
+
+{% endblock %}
