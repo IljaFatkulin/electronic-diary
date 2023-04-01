@@ -76,7 +76,7 @@ class AdminUsersController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{group}', name: 'group')]
+    #[Route('/{group}', name: 'group')]
     public function user_choose(Request $request, GroupUserRepository $groupUserRepository, GroupRepository $groupRepository, UserRepository $userRepository) : Response
     {
         $group = $request->get('group');
@@ -93,11 +93,12 @@ class AdminUsersController extends AbstractController
         ]);
     }
 
-    #[Route('/users/profile/{id}', name: 'profile')]
-    public function user_profile(Request $request, UserRepository $userRepository, GroupUserRepository $groupUserRepository, GroupRepository $groupRepository): Response
+    #[Route('/profile/{id}', name: 'profile')]
+    public function user_profile(Request $request, UserRepository $userRepository, GroupUserRepository $groupUserRepository, GroupRepository $groupRepository, TeacherRepository $teacherRepository): Response
     {
         $id = $request->get('id');
         $user = $userRepository->find($id);
+
         if(!$user->getGroup()->isEmpty()) {
             $group = $groupUserRepository->findOneBy(['user' => $user]);
             $group = $group->getGroup();
@@ -105,9 +106,18 @@ class AdminUsersController extends AbstractController
             $group = 'null';
         }
 
+        $subjects = [];
+        if($user->getRoles()[0] == 'ROLE_TEACHER') {
+            $data = $teacherRepository->findBy(['user' => $user]);
+            foreach ($data as $subject) {
+                $subjects[] = $subject->getSubject()->getName();
+            }
+        }
+
         return $this->render('admin_panel/users/user_profile.html.twig', [
             'user' => $user,
-            'group' => $group
+            'group' => $group,
+            'subjects' => $subjects
         ]);
     }
 

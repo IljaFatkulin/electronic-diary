@@ -22,14 +22,38 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/getadmin', name: 'getadmin')]
-    public function getadmin()
+    public function get_admin_role()
     {
         $em = $this->doctrine->getManager();
         $user = $this->security->getUser();
-        $roles[] = 'ROLE_ADMIN';
-
 
         $user->setRoles(array('ROLE_ADMIN'));
+
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('profile'));
+    }
+
+    #[Route(path: '/getteacher', name: 'getteacher')]
+    public function get_teacher_role()
+    {
+        $em = $this->doctrine->getManager();
+        $user = $this->security->getUser();
+
+        $user->setRoles(['ROLE_TEACHER']);
+
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('profile'));
+    }
+
+    #[Route('/getuser', name: 'getuser')]
+    public function get_user_role()
+    {
+        $em = $this->doctrine->getManager();
+        $user = $this->security->getUser();
+
+        $user->setRoles(['ROLE_USER']);
 
         $em->flush();
 

@@ -3,5 +3,12 @@
 {% block body %}
     Username: {{ user.username }} <br>
     Role: {{ user.roles[0] }} <br>
-    Group: {{ group }}
+    {% if user.roles[0] == 'ROLE_USER' %}
+        Group: {{ group }}
+    {% elseif user.roles[0] == 'ROLE_TEACHER' %}
+        Subjects:
+        {% for subject in subjects %}
+            {{ subject }} |
+        {% endfor %}
+    {% endif %}
 {% endblock %}

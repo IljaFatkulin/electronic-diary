@@ -21,7 +21,9 @@ return [
         '/post' => [[['_route' => 'post_index', '_controller' => 'App\\Controller\\PostController::index'], null, null, null, true, false, null]],
         '/post/create' => [[['_route' => 'post_create', '_controller' => 'App\\Controller\\PostController::create'], null, null, null, false, false, null]],
         '/register' => [[['_route' => 'register', '_controller' => 'App\\Controller\\RegistrationController::register'], null, null, null, false, false, null]],
-        '/getadmin' => [[['_route' => 'getadmin', '_controller' => 'App\\Controller\\SecurityController::getadmin'], null, null, null, false, false, null]],
+        '/getadmin' => [[['_route' => 'getadmin', '_controller' => 'App\\Controller\\SecurityController::get_admin_role'], null, null, null, false, false, null]],
+        '/getteacher' => [[['_route' => 'getteacher', '_controller' => 'App\\Controller\\SecurityController::get_teacher_role'], null, null, null, false, false, null]],
+        '/getuser' => [[['_route' => 'getuser', '_controller' => 'App\\Controller\\SecurityController::get_user_role'], null, null, null, false, false, null]],
         '/login' => [[['_route' => 'app_login', '_controller' => 'App\\Controller\\SecurityController::login'], null, null, null, false, false, null]],
         '/logout' => [[['_route' => 'app_logout', '_controller' => 'App\\Controller\\SecurityController::logout'], null, null, null, false, false, null]],
     ],
@@ -47,25 +49,25 @@ return [
                         .'|change/([^/]++)/([^/]++)(*:226)'
                         .'|delete/([^/]++)/([^/]++)/([^/]++)(*:267)'
                     .')'
-                    .'|users/users/(?'
-                        .'|([^/]++)(*:299)'
-                        .'|profile/([^/]++)(*:323)'
+                    .'|users/(?'
+                        .'|([^/]++)(*:293)'
+                        .'|profile/([^/]++)(*:317)'
                     .')'
                 .')'
                 .'|/mark(?'
-                    .'|s(?:/([^/]++))?(*:356)'
-                    .'|/remove(?:/([^/]++)(?:/([^/]++))?)?(*:399)'
+                    .'|s(?:/([^/]++))?(*:350)'
+                    .'|/remove(?:/([^/]++)(?:/([^/]++))?)?(*:393)'
                 .')'
                 .'|/p(?'
                     .'|ost/(?'
-                        .'|show/([^/]++)(*:433)'
-                        .'|delete/([^/]++)(*:456)'
+                        .'|show/([^/]++)(*:427)'
+                        .'|delete/([^/]++)(*:450)'
                     .')'
-                    .'|rofile(?:/([^/]++))?(*:485)'
+                    .'|rofile(?:/([^/]++))?(*:479)'
                 .')'
                 .'|/timetable(?'
-                    .'|(?:/([^/]++))?(*:521)'
-                    .'|(?:/([^/]++)(?:/([^/]++)(?:/([^/]++))?)?)?(*:571)'
+                    .'|(?:/([^/]++))?(*:515)'
+                    .'|(?:/([^/]++)(?:/([^/]++)(?:/([^/]++))?)?)?(*:565)'
                 .')'
             .')/?$}sDu',
     ],
@@ -79,15 +81,15 @@ return [
         159 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
         226 => [[['_route' => 'admin_timetable_change', '_controller' => 'App\\Controller\\AdminPanel\\AdminTimetableController::timetableChange'], ['group', 'date'], null, null, false, true, null]],
         267 => [[['_route' => 'admin_timetable_delete', '_controller' => 'App\\Controller\\AdminPanel\\AdminTimetableController::deleteLesson'], ['id', 'group', 'date'], null, null, false, true, null]],
-        299 => [[['_route' => 'admin_users_group', '_controller' => 'App\\Controller\\AdminPanel\\AdminUsersController::user_choose'], ['group'], null, null, false, true, null]],
-        323 => [[['_route' => 'admin_users_profile', '_controller' => 'App\\Controller\\AdminPanel\\AdminUsersController::user_profile'], ['id'], null, null, false, true, null]],
-        356 => [[['_route' => 'mark', 'id' => null, '_controller' => 'App\\Controller\\MarkController::index'], ['id'], null, null, false, true, null]],
-        399 => [[['_route' => 'removeMark', 'id' => null, 'uid' => null, '_controller' => 'App\\Controller\\MarkController::removeMark'], ['id', 'uid'], null, null, false, true, null]],
-        433 => [[['_route' => 'post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], null, null, false, true, null]],
-        456 => [[['_route' => 'post_delete', '_controller' => 'App\\Controller\\PostController::remove'], ['id'], null, null, false, true, null]],
-        485 => [[['_route' => 'profile', 'name' => null, '_controller' => 'App\\Controller\\ProfileController::profileAction'], ['name'], null, null, false, true, null]],
-        521 => [[['_route' => 'timetable', 'group' => null, '_controller' => 'App\\Controller\\TimetableController::index'], ['group'], null, null, false, true, null]],
-        571 => [
+        293 => [[['_route' => 'admin_users_group', '_controller' => 'App\\Controller\\AdminPanel\\AdminUsersController::user_choose'], ['group'], null, null, false, true, null]],
+        317 => [[['_route' => 'admin_users_profile', '_controller' => 'App\\Controller\\AdminPanel\\AdminUsersController::user_profile'], ['id'], null, null, false, true, null]],
+        350 => [[['_route' => 'mark', 'id' => null, '_controller' => 'App\\Controller\\MarkController::index'], ['id'], null, null, false, true, null]],
+        393 => [[['_route' => 'removeMark', 'id' => null, 'uid' => null, '_controller' => 'App\\Controller\\MarkController::removeMark'], ['id', 'uid'], null, null, false, true, null]],
+        427 => [[['_route' => 'post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], null, null, false, true, null]],
+        450 => [[['_route' => 'post_delete', '_controller' => 'App\\Controller\\PostController::remove'], ['id'], null, null, false, true, null]],
+        479 => [[['_route' => 'profile', 'name' => null, '_controller' => 'App\\Controller\\ProfileController::profileAction'], ['name'], null, null, false, true, null]],
+        515 => [[['_route' => 'timetable', 'group' => null, '_controller' => 'App\\Controller\\TimetableController::index'], ['group'], null, null, false, true, null]],
+        565 => [
             [['_route' => 'timetable_filter', 'date' => null, 'action' => null, 'group' => null, '_controller' => 'App\\Controller\\TimetableController::timetableFilter'], ['date', 'action', 'group'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

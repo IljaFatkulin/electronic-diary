@@ -72,11 +72,35 @@ class __TwigTemplate_6ea3d68968abda0f39d3dcb2ff854ea7 extends Template
         // line 5
         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, (isset($context["user"]) || array_key_exists("user", $context) ? $context["user"] : (function () { throw new RuntimeError('Variable "user" does not exist.', 5, $this->source); })()), "roles", [], "any", false, false, false, 5), 0, [], "array", false, false, false, 5), "html", null, true);
         echo " <br>
-    Group: ";
+    ";
         // line 6
-        echo twig_escape_filter($this->env, (isset($context["group"]) || array_key_exists("group", $context) ? $context["group"] : (function () { throw new RuntimeError('Variable "group" does not exist.', 6, $this->source); })()), "html", null, true);
-        echo "
-";
+        if ((twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, (isset($context["user"]) || array_key_exists("user", $context) ? $context["user"] : (function () { throw new RuntimeError('Variable "user" does not exist.', 6, $this->source); })()), "roles", [], "any", false, false, false, 6), 0, [], "array", false, false, false, 6) == "ROLE_USER")) {
+            // line 7
+            echo "        Group: ";
+            echo twig_escape_filter($this->env, (isset($context["group"]) || array_key_exists("group", $context) ? $context["group"] : (function () { throw new RuntimeError('Variable "group" does not exist.', 7, $this->source); })()), "html", null, true);
+            echo "
+    ";
+        } elseif ((twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source,         // line 8
+(isset($context["user"]) || array_key_exists("user", $context) ? $context["user"] : (function () { throw new RuntimeError('Variable "user" does not exist.', 8, $this->source); })()), "roles", [], "any", false, false, false, 8), 0, [], "array", false, false, false, 8) == "ROLE_TEACHER")) {
+            // line 9
+            echo "        Subjects:
+        ";
+            // line 10
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable((isset($context["subjects"]) || array_key_exists("subjects", $context) ? $context["subjects"] : (function () { throw new RuntimeError('Variable "subjects" does not exist.', 10, $this->source); })()));
+            foreach ($context['_seq'] as $context["_key"] => $context["subject"]) {
+                // line 11
+                echo "            ";
+                echo twig_escape_filter($this->env, $context["subject"], "html", null, true);
+                echo " |
+        ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['subject'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 13
+            echo "    ";
+        }
         
         $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
 
@@ -97,7 +121,7 @@ class __TwigTemplate_6ea3d68968abda0f39d3dcb2ff854ea7 extends Template
 
     public function getDebugInfo()
     {
-        return array (  77 => 6,  73 => 5,  68 => 4,  58 => 3,  35 => 1,);
+        return array (  102 => 13,  93 => 11,  89 => 10,  86 => 9,  84 => 8,  79 => 7,  77 => 6,  73 => 5,  68 => 4,  58 => 3,  35 => 1,);
     }
 
     public function getSourceContext()
@@ -107,7 +131,14 @@ class __TwigTemplate_6ea3d68968abda0f39d3dcb2ff854ea7 extends Template
 {% block body %}
     Username: {{ user.username }} <br>
     Role: {{ user.roles[0] }} <br>
-    Group: {{ group }}
-{% endblock %}", "admin_panel/users/user_profile.html.twig", "/Applications/XAMPP/xamppfiles/htdocs/sfcoursev2/templates/admin_panel/users/user_profile.html.twig");
+    {% if user.roles[0] == 'ROLE_USER' %}
+        Group: {{ group }}
+    {% elseif user.roles[0] == 'ROLE_TEACHER' %}
+        Subjects:
+        {% for subject in subjects %}
+            {{ subject }} |
+        {% endfor %}
+    {% endif %}
+{% endblock %}", "admin_panel/users/user_profile.html.twig", "/Applications/XAMPP/xamppfiles/htdocs/electronic-diary/templates/admin_panel/users/user_profile.html.twig");
     }
 }
